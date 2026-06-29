@@ -1,0 +1,3 @@
+class TopicGenerator:
+	pass
+

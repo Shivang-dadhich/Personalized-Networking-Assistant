@@ -1,0 +1,3 @@
+class FactChecker:
+	pass
+
