@@ -34,69 +34,66 @@ def generate_topics(extracted_themes: List[str], user_interests: List[str]) -> L
     """
     Constructs a prompt from themes and interests, generates raw text using GPT-2,
     and cleans/formats the output into 3 distinct conversation starters.
-    
-    :param extracted_themes: Top themes from event_analyzer (e.g., ['AI', 'sustainability'])
-    :param user_interests: The user's personal interests (e.g., ['coding', 'green tech'])
-    :return: A list of 3 clean conversation starter strings.
     """
     if not extracted_themes and not user_interests:
-        logger.warning("No themes or interests provided. Returning generic icebreakers.")
         return [
             "What brings you to this event today?",
             "Have you heard any interesting speakers so far?",
             "What projects are you currently working on?"
         ]
 
-    # 1. Prompt Engineering: Create a narrative context to guide GPT-2
     themes_str = ", ".join(extracted_themes)
     interests_str = ", ".join(user_interests)
     
-    # We guide the model by formatting the prompt as a pre-started list
+    # Clean, direct narrative prompt
     prompt = (
-        f"I am attending a networking event focused on {themes_str}. "
-        f"My professional interests are {interests_str}. "
-        f"Here are 3 unique, engaging conversation starters I can use to talk to someone:\n"
+        f"Event Topics: {themes_str}. My Interests: {interests_str}.\n"
+        "Here are 3 unique, practical conversation starters to break the ice:\n"
         "1."
     )
 
     try:
         logger.info("Generating raw conversation text from GPT-2...")
-        # 2. Run the generator with max_length restriction
-        # pad_token_id handles end-of-text settings cleanly
+        
+        # Enhanced parameters to fix text quality and clear warnings
         raw_outputs = conversation_generator(
             prompt, 
-            max_length=110,  # Elevated slightly to accommodate the prompt length safely
-            num_return_sequences=1,
-            pad_token_id=50256  # Standard GPT-2 EOS token ID
+            max_new_tokens=60,         # Controls exact number of newly generated words
+            do_sample=True,            # Enables creative sampling instead of rigid guessing
+            temperature=0.8,           # Adds a balance of creativity and structure (0.7-0.9 is ideal)
+            top_k=50,                  # Keeps the words focused on top probabilities
+            repetition_penalty=1.2,    # STRICTLY prevents the model from repeating words/phrases
+            pad_token_id=50256,
+            clean_up_tokenization_spaces=False  # Silences the BPE tokenizer warning
         )
         
         raw_text = raw_outputs[0]["generated_text"]
-        
-        # 3. Post-Processing: Isolate the generated part and clean it up
-        # Remove the prompt prefix so we only analyze what GPT-2 invented
         generated_part = raw_text[len(prompt):]
         
-        # Split by newlines to break down the list items
-        lines = generated_part.split("\n")
+        # Split by newlines or sentence endings to capture independent clean lines
+        lines = re.split(r'\n|\d\.', generated_part)
         
         clean_starters = []
         for line in lines:
-            # Clean up leading numbers, bullet points, hyphens, and whitespace
             cleaned = re.sub(r"^[\s\d\.\-\*•]+", "", line).strip()
             
-            # Ensure the line actually has meaningful text and isn't empty
-            if cleaned and len(cleaned) > 10:
+            # Ensure it looks like a meaningful phrase and isn't just a fragment
+            if cleaned and len(cleaned) > 15 and (cleaned.endswith('?') or cleaned.endswith('.')):
                 clean_starters.append(cleaned)
             
-            # Stop once we have our target 3 conversation starters
             if len(clean_starters) == 3:
                 break
 
-        # Fallback security check: if GPT-2 failed to generate clean lines, provide defaults
+        # Fallback strings if GPT-2 output cuts off awkwardly
+        fallbacks = [
+            f"Hey, are you working on anything interesting related to {extracted_themes[0]}?",
+            f"What got you interested in studying {user_interests[0] if user_interests else 'this field'}?",
+            f"Are there any specific sessions or trends in {themes_str} you are following today?"
+        ]
+        
         while len(clean_starters) < 3:
-            clean_starters.append(f"Hey! Are you working on anything related to {extracted_themes[0] if extracted_themes else 'tech'} lately?")
+            clean_starters.append(fallbacks[len(clean_starters)])
 
-        logger.info("Successfully generated and cleaned conversation starters.")
         return clean_starters[:3]
 
     except Exception as e:
@@ -106,7 +103,6 @@ def generate_topics(extracted_themes: List[str], user_interests: List[str]) -> L
             "How do you think the core topics of this event will affect the industry next year?",
             "Are there any specific sessions or people you're hoping to connect with?"
         ]
-
 
 # ==========================================
 # EXAMPLE USAGE (For testing purposes)
