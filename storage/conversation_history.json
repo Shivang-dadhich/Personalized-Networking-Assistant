@@ -1,0 +1,31 @@
+[
+    {
+        "timestamp": "2026-06-30T10:51:06.259958+00:00",
+        "event_description": "Networking summit for green energy startups in Jaipur.",
+        "extracted_themes": [
+            "sustainability",
+            "education"
+        ],
+        "conversation_starters": [
+            "Hey, are you currently working on any projects involving clean energy?",
+            "What got you interested in attending the tech talks today?"
+        ]
+    },
+    {
+        "timestamp": "2026-06-30T10:51:41.352989+00:00",
+        "suggestion_text": "Hey, are you currently working on any projects involving clean energy?",
+        "action": "like"
+    },
+    {
+        "timestamp": "2026-06-30T10:53:01.302499+00:00",
+        "event_description": "Networking summit for green energy startups in Jaipur.",
+        "extracted_themes": [
+            "sustainability",
+            "education"
+        ],
+        "conversation_starters": [
+            "Hey, are you currently working on any projects involving clean energy?",
+            "What got you interested in attending the tech talks today?"
+        ]
+    }
+]

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 # Define the file path using pathlib.Path for cross-platform safety.
 # This creates a 'storage' folder in your project root to keep data organized.
-HISTORY_FILE_PATH = Path(__file__).resolve().parent.parent / "storage" / "conversation_history.json"
+HISTORY_FILE_PATH = Path(__file__).resolve().parent.parent.parent / "storage" / "conversation_history.json"
 
 
 def load_history() -> List[Dict[str, Any]]:
