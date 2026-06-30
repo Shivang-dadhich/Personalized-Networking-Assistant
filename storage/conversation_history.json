@@ -27,5 +27,33 @@
             "Hey, are you currently working on any projects involving clean energy?",
             "What got you interested in attending the tech talks today?"
         ]
+    },
+    {
+        "timestamp": "2026-06-30T11:40:42.103801+00:00",
+        "event_description": "A hackthon will be happing in my collage on the theme farming and technology ",
+        "extracted_themes": [
+            "sustainability",
+            "blockchain",
+            "healthcare"
+        ],
+        "conversation_starters": [
+            "Hey, are you working on anything interesting related to sustainability?",
+            "What got you interested in studying javaScript?",
+            "Are there any specific sessions or trends in sustainability, blockchain, healthcare you are following today?"
+        ]
+    },
+    {
+        "timestamp": "2026-06-30T11:48:42.152662+00:00",
+        "event_description": "A hackthon will be happing in my collage on the theme farming and technology ",
+        "extracted_themes": [
+            "Agriculture & Farming",
+            "Gaming & Animation",
+            "Cybersecurity"
+        ],
+        "conversation_starters": [
+            "Hey, are you working on anything interesting related to Agriculture & Farming?",
+            "What got you interested in studying javaScript?",
+            "Are there any specific sessions or trends in Agriculture & Farming, Gaming & Animation, Cybersecurity you are following today?"
+        ]
     }
 ]

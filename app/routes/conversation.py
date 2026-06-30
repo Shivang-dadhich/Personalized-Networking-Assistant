@@ -10,7 +10,7 @@ from app.services.topic_generator import generate_topics
 from app.services.history_logger import log_conversation
 
 # Import your core global schemas
-from app.schemas import EventContext, WikipediaFactCheck
+from app.models.schemas import EventContext, WikipediaFactCheck
 
 logger = logging.getLogger(__name__)
 

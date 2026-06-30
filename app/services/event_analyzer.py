@@ -40,7 +40,14 @@ def extract_event_themes(event_description: str, candidate_labels: Optional[List
     """
     # 1. Fallback to default professional networking themes if none provided
     if not candidate_labels:
-        candidate_labels = ["AI", "healthcare", "blockchain", "education", "sustainability"]
+        #Broad universal taxonomy covering modern industries, tech domains, and events
+        candidate_labels = [
+            "AI & Machine Learning", "Software Development", "Cybersecurity", "Cloud Computing",
+            "Blockchain & Web3", "Fintech & Finance", "Healthcare & Biotech", "Data Science",
+            "Sustainability & Environment", "Agriculture & Farming", "Education Tech", 
+            "E-commerce & Retail", "Sports & Entertainment", "Gaming & Animation", 
+            "Hardware & IoT", "Marketing & Branding", "Social Networking", "Aerospace"
+        ]
     
     # Validation check for empty text
     if not event_description.strip():
