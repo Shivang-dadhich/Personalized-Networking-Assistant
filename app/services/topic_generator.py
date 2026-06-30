@@ -11,15 +11,15 @@ logger = logging.getLogger(__name__)
 # MODULE-LEVEL INITIALIZATION & SEEDING
 # ==========================================
 # Fixing the random seed ensures consistent, reproducible results for debugging
-logger.info("Setting random seed to 42 for reproducibility.")
-set_seed(42)
+#logger.info("Setting random seed to 42 for reproducibility.")
+# set_seed(42)
 
 logger.info("Initializing GPT-2 text generation pipeline...")
 try:
     # Loading the standard GPT-2 model into memory once at startup
     conversation_generator = pipeline(
         "text-generation", 
-        model="gpt2"
+        model="HuggingFaceTB/SmolLM2-360M-Instruct"
     )
     logger.info("GPT-2 pipeline successfully loaded into memory.")
 except Exception as e:
@@ -46,10 +46,18 @@ def generate_topics(extracted_themes: List[str], user_interests: List[str]) -> L
     interests_str = ", ".join(user_interests)
     
     # Clean, direct narrative prompt
+    # Standard ChatML format that instruction models understand perfectly
     prompt = (
-        f"Event Topics: {themes_str}. My Interests: {interests_str}.\n"
-        "Here are 3 unique, practical conversation starters to break the ice:\n"
-        "1."
+        "<|im_start|>system\n"
+        "You are a helpful networking assistant. Your task is to output exactly 3 concise, "
+        "natural conversation starters for an event. Each starter must be a direct question "
+        "separated by a single newline. Do not include introductory text, headers, or numbering.\n"
+        "<|im_end|>\n"
+        "<|im_start|>user\n"
+        f"Generate 3 conversation starters based on these event themes: {themes_str}. "
+        f"Incorporate these user interests naturally: {interests_str}.\n"
+        "<|im_end|>\n"
+        "<|im_start|>assistant\n"
     )
 
     try:
@@ -58,32 +66,52 @@ def generate_topics(extracted_themes: List[str], user_interests: List[str]) -> L
         # Enhanced parameters to fix text quality and clear warnings
         raw_outputs = conversation_generator(
             prompt, 
-            max_new_tokens=60,         # Controls exact number of newly generated words
+            max_new_tokens=140,         # Controls exact number of newly generated words
+            max_length=None,           
+            generation_config=None,
             do_sample=True,            # Enables creative sampling instead of rigid guessing
             temperature=0.8,           # Adds a balance of creativity and structure (0.7-0.9 is ideal)
             top_k=50,                  # Keeps the words focused on top probabilities
+            top_p=0.90,
             repetition_penalty=1.2,    # STRICTLY prevents the model from repeating words/phrases
-            pad_token_id=50256,
+            pad_token_id=0,
             clean_up_tokenization_spaces=False  # Silences the BPE tokenizer warning
         )
+        
+        print(raw_outputs)
         
         raw_text = raw_outputs[0]["generated_text"]
         generated_part = raw_text[len(prompt):]
         
-        # Split by newlines or sentence endings to capture independent clean lines
-        lines = re.split(r'\n|\d\.', generated_part)
+        # Split purely by lines
+        lines = generated_part.split("\n")
         
         clean_starters = []
         for line in lines:
-            cleaned = re.sub(r"^[\s\d\.\-\*•]+", "", line).strip()
+            cleaned = line.strip()
+            # 1. Strip out lingering model prefixes like "1.", "*", or "-"
+            cleaned = re.sub(r"^[\s\d\.\)\-\*•]+", "", cleaned).strip()
             
-            # Ensure it looks like a meaningful phrase and isn't just a fragment
-            if cleaned and len(cleaned) > 15 and (cleaned.endswith('?') or cleaned.endswith('.')):
+            # 2. NEW: Clean out extra parenthetical notes the model appends at the end
+            # This turns "What can I do...? (politics & events)" into "What can I do...?"
+            cleaned = re.sub(r"\s*\([^)]*\)\s*$", "", cleaned).strip()
+            
+            # 3. Process the sentence safely
+            if cleaned and len(cleaned) > 12:
+                # Add trailing question mark if missing
+                if not cleaned.endswith('?'):
+                    # If it ends with a period, swap it out
+                    if cleaned.endswith('.'):
+                        cleaned = cleaned[:-1]
+                    cleaned += '?'
+                
                 clean_starters.append(cleaned)
             
             if len(clean_starters) == 3:
                 break
-
+            
+            
+            
         # Fallback strings if GPT-2 output cuts off awkwardly
         fallbacks = [
             f"Hey, are you working on anything interesting related to {extracted_themes[0]}?",
