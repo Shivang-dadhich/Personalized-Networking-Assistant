@@ -1,0 +1,124 @@
+import logging
+from typing import List, Dict, Any
+from fastapi import APIRouter, HTTPException, status
+from pydantic import BaseModel, Field
+
+# Import your underlying service functions
+from app.services.event_analyzer import extract_event_themes
+from app.services.fact_checker import fact_check
+from app.services.topic_generator import generate_topics
+from app.services.history_logger import log_conversation
+
+# Import your core global schemas
+from app.schemas import EventContext, WikipediaFactCheck
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter(
+    prefix="/conversation",
+    tags=["Conversation & Orchestration"]
+)
+
+# ==========================================
+# ENDPOINT LOCAL SCHEMAS (Request/Response)
+# ==========================================
+
+class AnalyzeEventRequest(BaseModel):
+    event_description: str = Field(..., description="Raw text description of the networking event")
+    candidate_labels: List[str] | None = Field(default=None, description="Optional custom categories to match against")
+
+class FactCheckRequest(BaseModel):
+    query: str = Field(..., description="Topic or terminology string to query on Wikipedia")
+
+class GenerateConversationRequest(BaseModel):
+    event_description: str = Field(..., description="Raw text description of the networking event")
+    user_interests: List[str] = Field(..., description="List of professional topics or subjects the user likes")
+
+class GenerateConversationResponse(BaseModel):
+    extracted_themes: List[str] = Field(..., description="Top 3 themes calculated by the DistilBERT classifier")
+    conversation_starters: List[str] = Field(..., description="Icebreaker items created by the GPT-2 engine")
+
+
+# ==========================================
+# ROUTER ENDPOINTS
+# ==========================================
+
+@router.post("/analyze-event", response_model=EventContext)
+async def analyze_event_endpoint(payload: AnalyzeEventRequest):
+    """
+    Standalone endpoint to extract themes from an event description using the DistilBERT classifier.
+    Useful for debugging or isolated testing.
+    """
+    try:
+        themes = extract_event_themes(payload.event_description, payload.candidate_labels)
+        
+        # Mapping cleanly to your formal EventContext schema layout
+        return EventContext(
+            EventDescription=payload.event_description,
+            AnalyzedThemes=themes
+        )
+    except Exception as e:
+        logger.error(f"Router error in /analyze-event: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal processing error during theme analysis.")
+
+
+@router.post("/fact-check", response_model=WikipediaFactCheck)
+async def fact_check_endpoint(payload: FactCheckRequest):
+    """
+    Wraps the Wikipedia verification service in an API contract.
+    Returns structured data detailing the result of the lookups.
+    """
+    try:
+        verification_result = fact_check(payload.query)
+        
+        # Map output to your formal Pydantic WikipediaFactCheck layout
+        # (Using a mock or system ID placeholder 0 for session tracking context if unbound)
+        return WikipediaFactCheck(
+            SessionID=0, 
+            VerifiedQueryText=payload.query,
+            VerificationStatus=verification_result,
+            WikipediaSourceURL=f"https://en.wikipedia.org/wiki/{payload.query.strip().replace(' ', '_')}"
+        )
+    except Exception as e:
+        logger.error(f"Router error in /fact-check: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal processing failure during fact-checking search.")
+
+
+@router.post("/generate-conversation", response_model=GenerateConversationResponse)
+async def generate_conversation_endpoint(payload: GenerateConversationRequest):
+    """
+    Primary orchestrator endpoint. 
+    1. Extracts themes via event analyzer.
+    2. Generates context-aware conversation topics via generator.
+    3. Triggers automatic background side-effect history logging.
+    """
+    # Step 1: Run the Event Theme Extractor Pipeline
+    try:
+        themes = extract_event_themes(payload.event_description)
+    except Exception as e:
+        logger.error(f"Pipeline failed at extraction stage: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to parse event context parameters.")
+
+    # Step 2: Generate the Conversation Icebreakers
+    try:
+        starters = generate_topics(extracted_themes=themes, user_interests=payload.user_interests)
+    except Exception as e:
+        logger.error(f"Pipeline failed at generation stage: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to construct generation dialogue context.")
+
+    # Step 3: Automatic Side-Effect Logging (The frontend completely ignores this step)
+    # The read-modify-write storage transaction occurs decoupled completely in the backend
+    log_success = log_conversation(
+        event_description=payload.event_description,
+        extracted_themes=themes,
+        conversation_starters=starters
+    )
+    
+    if not log_success:
+        logger.warning("Pipeline completed generation but failed background history persist verification.")
+
+    # Step 4: Return response structured explicitly as requested
+    return GenerateConversationResponse(
+        extracted_themes=themes,
+        conversation_starters=starters
+    )

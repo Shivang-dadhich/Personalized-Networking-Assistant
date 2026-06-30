@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routes.networking import router as networking_router
+from app.routes.conversation import router as networking_router
 
 
 def create_app() -> FastAPI:
@@ -21,4 +21,8 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+@app.get("/")
+def read_root():
+    return {"message": "Networking Assistant Backend Service is running optimally."}
 
