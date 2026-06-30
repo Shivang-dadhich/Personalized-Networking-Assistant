@@ -34,5 +34,17 @@
             "Hey, are you currently working on any projects involving clean energy?",
             "What got you interested in attending the tech talks today?"
         ]
+    },
+    {
+        "timestamp": "2026-06-30T10:36:31.382392+00:00",
+        "event_description": "Networking summit for green energy startups in Jaipur.",
+        "extracted_themes": [
+            "sustainability",
+            "education"
+        ],
+        "conversation_starters": [
+            "Hey, are you currently working on any projects involving clean energy?",
+            "What got you interested in attending the tech talks today?"
+        ]
     }
 ]

@@ -2,6 +2,7 @@
 import json
 import logging
 from datetime import datetime, timezone
+import os
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -53,7 +54,7 @@ def log_conversation(event_description: str, extracted_themes: List[str], conver
     """
     # 1. Build the new data dictionary structure
     new_entry = {
-        "timestamp": datetime.now(timezone.gmt).isoformat(), # Standard ISO-formatted timestamp
+        "timestamp": datetime.now(timezone.utc).isoformat(), # Standard ISO-formatted timestamp
         "event_description": event_description,
         "extracted_themes": extracted_themes,
         "conversation_starters": conversation_starters
@@ -68,11 +69,21 @@ def log_conversation(event_description: str, extracted_themes: List[str], conver
         
         # 4. Append the new log entry
         history.append(new_entry)
+        
+        # creating a temp file to write the updated history before replacing the original file
+        temp_file = HISTORY_FILE_PATH.with_suffix(".json.tmp")
 
-        # 5. Write the entire updated list back to disk safely
-        with open(HISTORY_FILE_PATH, "w", encoding="utf-8") as file:
+        # 5. Write the entire updated list to the temporary file first
+        with open(temp_file, "w", encoding="utf-8") as file:
             json.dump(history, file, indent=4, ensure_ascii=False)
             
+        # 6. Atomically replace the old file with the new one
+        # This OS-level operation is near-instantaneous. If the app closes before this line,
+        # your old history remains perfectly safe.
+        os.replace(temp_file, HISTORY_FILE_PATH)
+        
+        
+        
         logger.info("Successfully logged conversation session to history.")
         return True
 
