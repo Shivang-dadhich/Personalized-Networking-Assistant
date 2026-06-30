@@ -321,5 +321,33 @@
             "\"How can I help make your city more sustainable and eco-friendly?\"?",
             "\"Are there any sports news we should watch this season? It's coming up!\"?"
         ]
+    },
+    {
+        "timestamp": "2026-06-30T17:34:26.097396+00:00",
+        "event_description": "hey an political event happens in bjp office releted to recent election",
+        "extracted_themes": [
+            "Political & Elections",
+            "Governance",
+            "Agriculture & Farming"
+        ],
+        "conversation_starters": [
+            "How can I better prepare myself for the upcoming election season?",
+            "What significant changes have you seen in your local community recently due to the recent political developments?",
+            "Have you had any interesting experiences while working with agriculture and farming during your time at the university?"
+        ]
+    },
+    {
+        "timestamp": "2026-06-30T17:35:12.793854+00:00",
+        "event_description": "hey an political event happens in bjp office releted to recent election",
+        "extracted_themes": [
+            "Politics",
+            "Bjp",
+            "Recent"
+        ],
+        "conversation_starters": [
+            "What inspired you to participate in the recent elections?",
+            "I was impressed by Modi's leadership and his vision of building India as one nation!?",
+            "How do you think we can work together better during this election cycle?"
+        ]
     }
 ]
