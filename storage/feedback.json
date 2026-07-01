@@ -3,5 +3,15 @@
     "timestamp": "2026-06-30T10:52:41.089416+00:00",
     "suggestion_text": "Hey, are you currently working on any projects involving clean energy?",
     "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:14:16.523685+00:00",
+    "suggestion_text": "What's your favorite recent news article",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:14:28.055857+00:00",
+    "suggestion_text": "How has political polarization affected democracy during this election cycle",
+    "action": "dislike"
   }
 ]

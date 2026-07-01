@@ -87,7 +87,7 @@ tab1, tab2, tab3 = st.tabs([
 ])
 
 # ==========================================
-# TAB 1: GENERATING SMART STARTERS
+# TAB 1: GENERATING SMART STARTERS (FIXED STATE LOSS)
 # ==========================================
 with tab1:
     st.subheader("Pipeline Orchestration Engine")
@@ -99,24 +99,27 @@ with tab1:
         event_desc = st.text_area(
             "Event Description:",
             placeholder="e.g., AI for Sustainable Cities - discussing green grids and smart architecture...",
-            key="event_input"
+            key="event_input_field"
         )
         
         interests_input = st.text_input(
             "User Interests (Comma Separated):",
-            placeholder="climate change, urban planning, machine learning"
+            placeholder="climate change, urban planning, machine learning",
+            key="interests_input_field"
         )
 
     with col_right:
-        st.info("💡 **How it maps to your API contract:** Clicking down below serializes parameters directly into a strict `GenerateConversationRequest` block before invoking `/generate-conversation` endpoint.")
+        st.info("💡 **Session State Fixed:** Responses are now locked in memory so clicking feedback handles won't wipe your screen data.")
+
+    # Initialize session keys for tracking response output safely
+    if "api_response_data" not in st.session_state:
+        st.session_state.api_response_data = None
 
     if st.button("Execute Pipeline Journey"):
         if not event_desc.strip() or not interests_input.strip():
-            st.error("Event Description aur Interests both fields are mandatory!")
+            st.error("Bhai, Event Description aur Interests dono field mandatory hain!")
         else:
-            # Parse commas into clean array matching schema spec
             interests_list = [i.strip() for i in interests_input.split(",") if i.strip()]
-            
             payload = {
                 "event_description": event_desc.strip(),
                 "user_interests": interests_list
@@ -126,43 +129,67 @@ with tab1:
                 try:
                     res = requests.post(f"{BASE_URL}/generate-conversation", json=payload, timeout=45)
                     if res.status_code == 200:
-                        data = res.json()
-                        
+                        # Save inside session state memory box
+                        st.session_state.api_response_data = res.json()
                         st.success("Analysis Complete!")
-                        
-                        # Display Extracted Themes
-                        st.markdown("### 🏷️ Analyzed Themes (DistilBERT Decision)")
-                        for theme in data.get("extracted_themes", []):
-                            st.markdown(f'<span class="badge">{theme}</span>', unsafe_allow_html=True)
-                        
-                        # Display Conversation Starters
-                        st.markdown("### 💬 Target Icebreakers (GPT-2 Output)")
-                        starters = data.get("conversation_starters", [])
-                        
-                        for idx, starter in enumerate(starters, 1):
-                            clean_starter = starter.strip('"\'? ')
-                            
-                            # Custom Interactive Card Layout
-                            st.markdown(f"""
-                                <div class="custom-card">
-                                    <b>Starter #{idx}:</b> "{clean_starter}"
-                                </div>
-                            """, unsafe_allow_html=True)
-                            
-                            # Interactive feedback collection hook mapping to Scenario 3 requirements
-                            c1, c2, _ = st.columns([0.1, 0.1, 0.8])
-                            if c1.button("👍", key=f"up_{idx}_{clean_starter[:10]}"):
-                                st.session_state.feedback_log.append({
-                                    "timestamp": datetime.now().isoformat(),
-                                    "event": event_desc,
-                                    "starter": clean_starter,
-                                    "status": "Useful (Thumbs Up)"
-                                })
-                                st.toast("Saved configuration to session strategy log!")
                     else:
                         st.error(f"Backend Pipe Failure ({res.status_code}): {res.text}")
+                        st.session_state.api_response_data = None
                 except Exception as e:
                     st.error(f"Cannot bind to local port route: {str(e)}")
+                    st.session_state.api_response_data = None
+
+    # --- PERSISTENT RENDERING LAYER ---
+    # This block renders data independently of state reruns
+    if st.session_state.api_response_data is not None:
+        stored_data = st.session_state.api_response_data
+        
+        st.write("---")
+        # Display Extracted Themes
+        st.markdown("### 🏷️ Analyzed Themes (DistilBERT Decision)")
+        for theme in stored_data.get("extracted_themes", []):
+            st.markdown(f'<span class="badge">{theme}</span>', unsafe_allow_html=True)
+        
+        # Display Conversation Starters
+        st.markdown("### 💬 Target Icebreakers (GPT-2 Output)")
+        starters = stored_data.get("conversation_starters", [])
+        
+        for idx, starter in enumerate(starters, 1):
+            clean_starter = starter.strip('"\'? ')
+            
+            st.markdown(f"""
+                <div class="custom-card">
+                    <b>Starter #{idx}:</b> "{clean_starter}"
+                </div>
+            """, unsafe_allow_html=True)
+            
+            c1, c2, _ = st.columns([0.05, 0.05, 0.9])
+            
+            # --- THUMBS UP ACTION ---
+            if c1.button("👍", key=f"up_{idx}_{clean_starter[:10]}"):
+                feedback_payload = {"suggestion_text": clean_starter, "is_useful": True}
+                try:
+                    feedback_res = requests.post(f"{BASE_URL}/feedback", json=feedback_payload, timeout=10)
+                    if feedback_res.status_code == 200:
+                        st.toast("🔥 Feedback synchronized directly with server warehouse!")
+                    else:
+                        st.error(f"Server rejected telemetry state: {feedback_res.text}")
+                except Exception as e:
+                    st.error(f"Network pipeline failure: {str(e)}")
+
+            # --- THUMBS DOWN ACTION ---
+            if c2.button("👎", key=f"down_{idx}_{clean_starter[:10]}"):
+                feedback_payload = {"suggestion_text": clean_starter, "is_useful": False}
+                try:
+                    feedback_res = requests.post(f"{BASE_URL}/feedback", json=feedback_payload, timeout=10)
+                    if feedback_res.status_code == 200:
+                        st.toast("🗑️ Marked as unhelpful. Sent telemetry loop to server!")
+                    else:
+                        st.error(f"Server rejected telemetry state: {feedback_res.text}")
+                except Exception as e:
+                    st.error(f"Network pipeline failure: {str(e)}")
+                    
+                    
 
 # ==========================================
 # TAB 2: QUICK FACT VERIFICATION
@@ -208,9 +235,7 @@ with tab2:
 # ==========================================
 # TAB 3: REVIEWING PAST STRATEGIES (HISTORY & ANALYTICS)
 # ==========================================
-# ==========================================
-# TAB 3: REVIEWING PAST STRATEGIES (REAL API CALL)
-# ==========================================
+
 with tab3:
     st.subheader("📊 Server-Side Session Memory Analytics")
     st.markdown("This component invokes the live backend endpoint to pull historically evaluated strings out of storage layers.")

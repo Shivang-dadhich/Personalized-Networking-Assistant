@@ -391,5 +391,61 @@
             "How about we brainstorm some ideas together and see what you think could work best for us both!?",
             "Can you tell me more about the sustainability initiatives at our company so far this year?"
         ]
+    },
+    {
+        "timestamp": "2026-07-01T05:40:02.665464+00:00",
+        "event_description": "hey the recent event is about the sale and marketing camping for our new books ( a fictional book on super heros)",
+        "extracted_themes": [
+            "Marketing & Branding",
+            "Marketing",
+            "Camping"
+        ],
+        "conversation_starters": [
+            "Can you tell me about the latest marketing trends in your industry?",
+            "What's the most effective strategy for promoting our camp website right now?",
+            "Have you tried camping recently and what were some of the highlights?"
+        ]
+    },
+    {
+        "timestamp": "2026-07-01T05:50:19.920513+00:00",
+        "event_description": "hey the recent event is about the sale and marketing camping for our new books ( a fictional book on super heros)",
+        "extracted_themes": [
+            "Marketing & Branding",
+            "Sustainability & Environment",
+            "Sports & Entertainment"
+        ],
+        "conversation_starters": [
+            "\"What's your favorite marketing strategy and how do you think it can benefit our brand?\"?",
+            "\"I'm interested in learning more about sustainable practices at the local sports arena! What steps have they taken so far? Have there been successful initiatives that we should know about?\"?",
+            "\"Have you had a chance to watch/listen to our team compete lately? We'd love to get some insights from someone who has experience with sports broadcasting!\"?"
+        ]
+    },
+    {
+        "timestamp": "2026-07-01T05:54:07.034008+00:00",
+        "event_description": "hey an political event happens in bjp office releted to recent election",
+        "extracted_themes": [
+            "Elections",
+            "Political",
+            "Governance"
+        ],
+        "conversation_starters": [
+            "What's the most significant change you've seen in your city recently?",
+            "How has political climate affected international relations lately?",
+            "Can you give me some examples of governance challenges I should consider during my upcoming elections campaign?"
+        ]
+    },
+    {
+        "timestamp": "2026-07-01T06:04:31.331969+00:00",
+        "event_description": "hey an political event happens in bjp office releted to recent election",
+        "extracted_themes": [
+            "Recent Election",
+            "Bjp Office",
+            "Politics"
+        ],
+        "conversation_starters": [
+            "What's your favorite recent news article?",
+            "Have you heard about the current BJP government in power?",
+            "How has political polarization affected democracy during this election cycle?"
+        ]
     }
 ]

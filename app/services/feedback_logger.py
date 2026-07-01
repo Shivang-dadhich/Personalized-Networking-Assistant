@@ -29,7 +29,7 @@ def load_feedback() -> list:
         return []
 
 
-def log_feedback(suggestion_text: str, action: str) -> bool:
+def log_feedback(suggestion_text: str, action: bool) -> bool:
     """
     Logs a user's thumbs-up or thumbs-down action on a specific conversation starter.
     
@@ -37,6 +37,13 @@ def log_feedback(suggestion_text: str, action: str) -> bool:
     :param action: Either 'like' or 'dislike' based on UI interaction.
     :return: True if successfully logged, False otherwise.
     """
+    
+    if action is True:
+        action = "like" 
+    elif action is False:
+        action = "dislike"
+        
+    
     # Defensive validation: Ensure action is strictly limited to like or dislike
     if action not in ["like", "dislike"]:
         print(f"ERROR: Invalid feedback action received: '{action}'. Must be 'like' or 'dislike'.")
