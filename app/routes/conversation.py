@@ -162,3 +162,17 @@ async def submit_feedback_endpoint(payload: FeedbackRequest):
         return {"status": "Feedback logged successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to submit metrics transaction: {str(e)}")
+    
+    
+@router.get("/feedback", response_model=List[Dict[str, Any]])
+async def get_feedback_endpoint():
+    """
+    Retrieves all logged feedback entries for review and analysis.
+    """
+    try:
+        from app.services.feedback_logger import load_feedback
+        feedback_entries = load_feedback()
+        return feedback_entries
+    except Exception as e:
+        logger.error(f"Failed to fetch feedback logs: {str(e)}")
+        raise HTTPException(status_code=500, detail="Could not retrieve feedback logs.")

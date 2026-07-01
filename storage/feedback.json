@@ -13,5 +13,65 @@
     "timestamp": "2026-07-01T06:14:28.055857+00:00",
     "suggestion_text": "How has political polarization affected democracy during this election cycle",
     "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:26.969294+00:00",
+    "suggestion_text": "How do the latest innovations in IoT help farmers optimize their crop yields and efficiency",
+    "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:30.499159+00:00",
+    "suggestion_text": "What inspired you to take up gardening as your hobby",
+    "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:32.150532+00:00",
+    "suggestion_text": "What inspired you to take up gardening as your hobby",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:37.335765+00:00",
+    "suggestion_text": "What inspired you to take up gardening as your hobby",
+    "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:39.265451+00:00",
+    "suggestion_text": "What inspired you to take up gardening as your hobby",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:43.031630+00:00",
+    "suggestion_text": "How do the latest innovations in IoT help farmers optimize their crop yields and efficiency",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:36:43.966062+00:00",
+    "suggestion_text": "How do the latest innovations in IoT help farmers optimize their crop yields and efficiency",
+    "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-01T06:37:12.368269+00:00",
+    "suggestion_text": "string",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:37:20.756966+00:00",
+    "suggestion_text": "string",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:37:21.839354+00:00",
+    "suggestion_text": "string",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:38:43.666269+00:00",
+    "suggestion_text": "Are there any sustainable practices that can enhance our community's environmental performance through innovative use of technology",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-01T06:39:00.339983+00:00",
+    "suggestion_text": "What inspired you to take up gardening as your hobby",
+    "action": "dislike"
   }
 ]

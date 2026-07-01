@@ -233,59 +233,54 @@ with tab2:
                     st.error(f"API Error mapping execution pipeline: {str(e)}")
 
 # ==========================================
-# TAB 3: REVIEWING PAST STRATEGIES (HISTORY & ANALYTICS)
+# TAB 3: REVIEWING PAST STRATEGIES (REAL API CALL)
 # ==========================================
-
 with tab3:
     st.subheader("📊 Server-Side Session Memory Analytics")
-    st.markdown("This component invokes the live backend endpoint to pull historically evaluated strings out of storage layers.")
+    st.markdown("This component invokes live backend routes to pull both conversation footprints and feedback logs.")
 
-    c1, c2 = st.columns([1, 4])
-    trigger_fetch = c1.button("🔄 Fetch Logs From Server")
+    # Two action triggers side-by-side to handle both histories clean
+    c1, c2 = st.columns([1, 1])
+    trigger_fetch = c1.button("🔄 Fetch Conversation History")
+    trigger_feedback_fetch = c2.button("📋 Fetch Feedback History Log")
     
     st.write("---")
 
+    # ------------------------------------------
+    # BLOCK A: CONVERSATION HISTORY LOGS
+    # ------------------------------------------
     if trigger_fetch:
         with st.spinner("Connecting to pipeline telemetry warehouse..."):
             try:
                 res = requests.get(f"{BASE_URL}/history", timeout=15)
-                
                 if res.status_code == 200:
                     server_logs = res.json()
-                    
                     if not server_logs:
                         st.info("Backend database returned empty array. No historical sessions logged yet.")
                     else:
-                        # FIX 1: Sort logs to show the newest entries first (Latest-First)
-                        # Assumes backend logs contain a 'timestamp' key
                         try:
                             server_logs = sorted(server_logs, key=lambda x: x.get("timestamp", ""), reverse=True)
                         except Exception:
-                            pass # Fallback if timestamps are missing/malformed
+                            pass
 
-                        st.success(f"Successfully retrieved {len(server_logs)} historic sessions!")
+                        st.success(f"Successfully retrieved {len(server_logs)} historic conversation sessions!")
                         
                         for idx, log in enumerate(server_logs, 1):
                             desc = log.get("event_description" or "EventDescription", "N/A")
                             themes = log.get("extracted_themes" or "AnalyzedThemes", [])
                             starters = log.get("conversation_starters" or "Icebreakers", [])
                             
-                            # FIX 2: Format UTC/ISO Timestamp string directly into clean Indian Standard Time (IST) layout
                             raw_ts = log.get("timestamp", "")
                             ist_time_str = "N/A"
                             if raw_ts:
                                 try:
-                                    from datetime import timedelta # Import inside or at top of file
-                                    
+                                    from datetime import timedelta
                                     clean_ts = raw_ts.split("+")[0].split("Z")[0]
                                     dt_obj = datetime.fromisoformat(clean_ts)
-                                    
-                                    # Add 5 hours and 30 minutes to match Indian offset
                                     ist_dt = dt_obj + timedelta(hours=5, minutes=30)
-                                    
                                     ist_time_str = ist_dt.strftime("%d-%b-%Y | %I:%M %p IST")
                                 except Exception:
-                                    ist_time_str = raw_ts[:19] # Fallback        ist_time_str = raw_ts[:19] # Raw string fallback if formatting fails
+                                    ist_time_str = raw_ts[:19]
 
                             with st.container():
                                 st.markdown(f"""
@@ -304,12 +299,72 @@ with tab3:
                                     st.markdown("**Generated Starters:**")
                                     for s_idx, starter in enumerate(starters, 1):
                                         st.markdown(f"  `{s_idx}.` {starter}")
-                                        
                                 st.markdown("<br>", unsafe_allow_html=True)
                 else:
-                    st.error(f"Backend Retrieval Failure ({res.status_code}): {res.text}")
-                    
-            except requests.exceptions.ConnectionError:
-                st.error("🚨 **API Route Unreachable!** Verify if FastAPI dev server is up.")
+                    st.error(f"Backend Retrieval Failure: {res.text}")
             except Exception as e:
                 st.error(f"Execution tracking system error: {str(e)}")
+
+    # ------------------------------------------
+    # BLOCK B: EXPLICIT FEEDBACK HISTORY LOGS
+    # ------------------------------------------
+    if trigger_feedback_fetch:
+        with st.spinner("Fetching analytical user evaluation telemetry..."):
+            try:
+                # Assumes your ready backend endpoint is GET /conversation/feedback or similar history log endpoint
+                res = requests.get(f"{BASE_URL}/feedback", timeout=15)
+                
+                if res.status_code == 200:
+                    feedback_logs = res.json()
+                    
+                    if not feedback_logs:
+                        st.info("No explicit user evaluations recorded inside server logs yet.")
+                    else:
+                        # Sorting Latest-First based on timestamp key if present
+                        try:
+                            feedback_logs = sorted(feedback_logs, key=lambda x: x.get("timestamp", ""), reverse=True)
+                        except Exception:
+                            pass
+
+                        st.success(f"Successfully retrieved {len(feedback_logs)} recorded feedback logs!")
+                        
+                        for idx, fb in enumerate(feedback_logs, 1):
+                            suggestion = fb.get("suggestion_text")
+                            is_useful = fb.get("action") == "like"
+                            
+                            
+                            
+                            
+                            # Determine Status Tag & Color dynamically
+                            if is_useful:
+                                status_badge = '<span class="badge" style="background-color:#10b98122; color:#10b981;">👍 Useful (Upvoted)</span>'
+                                card_border = "#10b981"
+                            else:
+                                status_badge = '<span class="badge" style="background-color:#ef444422; color:#ef4444;">👎 Unhelpful (Downvoted)</span>'
+                                card_border = "#ef4444"
+
+                            # Parse Timestamp safely to Indian Current Time (IST)
+                            raw_ts = fb.get("timestamp", "")
+                            ist_time_str = "N/A"
+                            if raw_ts:
+                                try:
+                                    from datetime import timedelta
+                                    clean_ts = raw_ts.split("+")[0].split("Z")[0]
+                                    dt_obj = datetime.fromisoformat(clean_ts)
+                                    ist_dt = dt_obj + timedelta(hours=5, minutes=30)
+                                    ist_time_str = ist_dt.strftime("%d-%b-%Y | %I:%M %p IST")
+                                except Exception:
+                                    ist_time_str = raw_ts[:19]
+
+                            # Display Feedback Entry Custom Layout Cards
+                            st.markdown(f"""
+                                <div class="custom-card" style="border-left: 5px solid {card_border};">
+                                    <h5>Feedback Entry #{idx} <span style='font-size:12px; font-weight:normal; float:right; color:#888;'>🕒 {ist_time_str}</span></h5>
+                                    <p style="margin-bottom:10px;"><b>Icebreaker Phrase:</b> <i>"{suggestion}"</i></p>
+                                    {status_badge}
+                                </div>
+                            """, unsafe_allow_html=True)
+                else:
+                    st.error(f"Backend Feedback Retrieval Failure ({res.status_code}): {res.text}")
+            except Exception as e:
+                st.error(f"Cannot bind pipeline feedback loops: {str(e)}")
