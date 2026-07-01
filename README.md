@@ -37,7 +37,7 @@ The project is split into two independent repositories/folders for clean separat
                             └───────────────────────┘     └───────────────────────┘
 
 ---
-
+```
 ## 🛠️ Tech Stack
 
 * **Frontend:** Streamlit, Python 3.13, HTTPX
