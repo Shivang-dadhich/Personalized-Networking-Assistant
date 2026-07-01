@@ -349,5 +349,47 @@
             "I was impressed by Modi's leadership and his vision of building India as one nation!?",
             "How do you think we can work together better during this election cycle?"
         ]
+    },
+    {
+        "timestamp": "2026-07-01T03:36:22.499464+00:00",
+        "event_description": "hey the recent event is about the sale and marketing camping for our new books ( a fictional book on super heros)",
+        "extracted_themes": [
+            "Marketing & Branding",
+            "Sustainability & Environment",
+            "Sports & Entertainment"
+        ],
+        "conversation_starters": [
+            "What do you think about our upcoming product launch?",
+            "I'm really looking forward to watching that sports game tonight!?",
+            "How's the marketing team coming along with their latest campaign?"
+        ]
+    },
+    {
+        "timestamp": "2026-07-01T03:46:48.773144+00:00",
+        "event_description": "hey the recent event is about the sale and marketing camping for our new books ( a fictional book on super heros)",
+        "extracted_themes": [
+            "Marketing & Branding",
+            "Marketing",
+            "Camping"
+        ],
+        "conversation_starters": [
+            "\"What's the latest trend in eco-friendly fashion? Are you interested in learning more about it?\"?",
+            "\"Have you tried any movie recommendations lately? I just watched 'The Social Network' and loved it.\"?",
+            "\"Which band do you prefer playing guitar with - The Smiths or The Rolling Stones? They both have great energy!\"?"
+        ]
+    },
+    {
+        "timestamp": "2026-07-01T04:40:01.887905+00:00",
+        "event_description": "hey the recent event is about the sale and marketing camping for our new books ( a fictional book on super heros)",
+        "extracted_themes": [
+            "Marketing & Branding",
+            "Sustainability & Environment",
+            "Sports & Entertainment"
+        ],
+        "conversation_starters": [
+            "What can I do today that aligns with your marketing goals?",
+            "How about we brainstorm some ideas together and see what you think could work best for us both!?",
+            "Can you tell me more about the sustainability initiatives at our company so far this year?"
+        ]
     }
 ]

@@ -122,3 +122,43 @@ async def generate_conversation_endpoint(payload: GenerateConversationRequest):
         extracted_themes=themes,
         conversation_starters=starters
     )
+    
+    
+    
+    
+    
+@router.get("/history", response_model=List[Dict[str, Any]])
+async def get_history_endpoint():
+    """
+    Scenario 3 Requirement: Fetches all tracked historic logs 
+    and interaction metrics from storage to review inside the UI.
+    """
+    try:
+        # Assuming you have a fetch function inside your history_logger
+        from app.services.history_logger import load_history
+        logs = load_history()
+        return logs
+    except Exception as e:
+        logger.error(f"Failed to fetch historical session array: {str(e)}")
+        raise HTTPException(status_code=500, detail="Could not retrieve session memory.")
+    
+
+
+class FeedbackRequest(BaseModel):
+    suggestion_text: str
+    is_useful: bool
+
+@router.post("/feedback", status_code=status.HTTP_200_OK)
+async def submit_feedback_endpoint(payload: FeedbackRequest):
+    """
+    Captures runtime feedback parameters (thumbs up loops) 
+    to encourage optimization metrics.
+    """
+    try:
+        from app.services.feedback_logger import log_feedback
+        success = log_feedback(payload.suggestion_text, payload.is_useful)
+        if not success:
+            raise HTTPException(status_code=404, detail="Target suggestion text index context match missing.")
+        return {"status": "Feedback logged successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to submit metrics transaction: {str(e)}")
