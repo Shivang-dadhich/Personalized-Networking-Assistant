@@ -17,7 +17,10 @@ if "feedback_log" not in st.session_state:
     st.session_state.feedback_log = []
 
 # Backend URL Configuration (Maps to FastAPI AppRouter Prefix)
-BASE_URL = "http://127.0.0.1:8000/conversation"
+if "BACKEND_API_URL" in st.secrets:
+    BASE_URL = st.secrets["BACKEND_API_URL"]
+else:
+    BASE_URL = os.getenv("BACKEND_API_URL", "http://127.0.0.1:8000/conversation")
 
 # ==========================================
 # SIDEBAR DYNAMIC THEME SELECTOR
