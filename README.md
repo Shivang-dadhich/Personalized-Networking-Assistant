@@ -70,10 +70,10 @@ Personalized-Networking-Assistant/
 ├── Dockerfile                  # Multi-stage production Python 3.13 Image
 ├── README.md                   # Project Documentation
 └── requirements.txt            # Production dependencies
+```
 
 
-
-### Local Setup & Installation
+## Local Setup & Installation
 
 Make sure you have Python 3.13 and the `uv` package manager installed.
 
