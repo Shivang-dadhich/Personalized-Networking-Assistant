@@ -210,6 +210,24 @@ with st.sidebar:
             color: {primary} !important;
             border-bottom-color: {primary} !important;
         }}
+        .custom-card {{
+            background-color: {card_bg};
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 5px solid {primary};
+        }}
+        .badge {{
+            background-color: {primary}22;
+            color: {primary};
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 13px;
+            margin-right: 5px;
+            display: inline-block;
+        }}
+        
         </style>
     """, unsafe_allow_html=True)
     
