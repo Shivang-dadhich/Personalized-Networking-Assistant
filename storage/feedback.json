@@ -73,5 +73,25 @@
     "timestamp": "2026-07-01T06:39:00.339983+00:00",
     "suggestion_text": "What inspired you to take up gardening as your hobby",
     "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-02T16:57:07.134798+00:00",
+    "suggestion_text": "Hi John! I'm excited about the upcoming tech expo and wanted to pick your brain more closely regarding our recent product launch in hardware. Could you provide some insights into how we're positioning ourselves within this industry? It would also be great if you could share any advice from past experiences.",
+    "action": "dislike"
+  },
+  {
+    "timestamp": "2026-07-02T16:57:10.695284+00:00",
+    "suggestion_text": "Hi John! I'm excited about the upcoming tech expo and wanted to pick your brain more closely regarding our recent product launch in hardware. Could you provide some insights into how we're positioning ourselves within this industry? It would also be great if you could share any advice from past experiences.",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-02T16:57:21.223880+00:00",
+    "suggestion_text": "Hey Sarah, Thanks so much for all that information on sustainable fashion trends last month. What do you think about incorporating similar elements of circular design principles into your marketing strategy going forward",
+    "action": "like"
+  },
+  {
+    "timestamp": "2026-07-02T16:57:26.863062+00:00",
+    "suggestion_text": "Hey Sarah, Thanks so much for all that information on sustainable fashion trends last month. What do you think about incorporating similar elements of circular design principles into your marketing strategy going forward",
+    "action": "dislike"
   }
 ]

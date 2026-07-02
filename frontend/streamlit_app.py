@@ -38,6 +38,7 @@ with st.sidebar:
     # 2. Dynamically load sub-options based on category choice
     if theme_category == "Dark IDE & Dev Pro":
         theme_choice = st.selectbox("Select Workspace Profile:", [
+            "0. Deep Space Dark",
             "1. GitHub Dark Default", "2. One Dark Pro", "3. Dracula Official", "4. Monokai Charcoal", 
             "5. Nord Deep Freeze", "6. Night Owl", "7. Tokyo Night", "8. Material Palenight", 
             "9. Solarized Dark", "10. SynthWave '84"
@@ -66,7 +67,8 @@ with st.sidebar:
     # =========================================================================
     theme_map = {
         # --- CATEGORY 1: DARK IDE & DEV PRO ---
-        "1. GitHub Dark Default":        ("#58a6ff", "#0d1117", "#c9d1d9", "#161b22"),
+        "0. Deep Space Dark":           ("#ff4b4b", "#0e1117", "#ffffff", "#1e2430"),
+        "1. GitHub Dark":        ("#58a6ff", "#0d1117", "#c9d1d9", "#161b22"),
         "2. One Dark Pro":               ("#61afef", "#282c34", "#abb2bf", "#21252b"),
         "3. Dracula Official":           ("#bd93f9", "#282a36", "#f8f8f2", "#343746"),
         "4. Monokai Charcoal":           ("#ffd866", "#191919", "#fcfcfa", "#222222"),
